@@ -3,9 +3,7 @@ package io.github.leocklaus.projectsmanager.domain.model;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -13,6 +11,8 @@ import java.util.UUID;
 @MappedSuperclass
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public abstract class BaseEntity extends Auditable implements Serializable {
 
     @Id

@@ -13,6 +13,7 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 public class User extends BaseEntity{
 
@@ -30,12 +31,6 @@ public class User extends BaseEntity{
     @Column(nullable = false)
     private String password;
 
-    public User(String name, String email, String phone, String password) {
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
-        this.password = password;
-    }
 
     public User(UserInputDTO dto){
         this.name = dto.name();
@@ -43,4 +38,11 @@ public class User extends BaseEntity{
         this.phone = dto.phone();
     }
 
+    public User(UUID id, String name, String email, String phone, String password) {
+        super(id);
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
+    }
 }

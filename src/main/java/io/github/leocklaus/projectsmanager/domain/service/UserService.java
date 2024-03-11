@@ -107,7 +107,7 @@ public class UserService {
 
     public User getLoggedUser(){
         //TO BE IMPLEMENTED
-        return new User("teste", "teste@teste.com", "12345", "1234");
+        return new User(UUID.randomUUID(),"teste", "teste@teste.com", "12345", "1234");
     }
 
 }
