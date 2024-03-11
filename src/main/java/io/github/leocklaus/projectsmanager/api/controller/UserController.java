@@ -1,15 +1,17 @@
 package io.github.leocklaus.projectsmanager.api.controller;
 
+import io.github.leocklaus.projectsmanager.api.dto.UserEditDTO;
+import io.github.leocklaus.projectsmanager.api.dto.UserEditPasswordDTO;
+import io.github.leocklaus.projectsmanager.api.dto.UserInputDTO;
 import io.github.leocklaus.projectsmanager.api.dto.UserOutputDTO;
 import io.github.leocklaus.projectsmanager.domain.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -38,27 +40,33 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser(){
+    public ResponseEntity<UserOutputDTO> createUser(@RequestBody @Valid UserInputDTO dto){
 
-        //TO BE IMPLEMENTED
+        var user = userService.createUser(dto);
 
-        var uri = URI.create("/users/id");
+        var uri = URI.create("/users/" + user.UUID());
 
         return ResponseEntity.created(uri).build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(){
+    public ResponseEntity<UserOutputDTO> updateUser(@PathVariable String id, @RequestBody UserEditDTO dto){
 
-        //TO BE IMPLEMENTED
+        UserOutputDTO user = userService.updateUser(id, dto);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/{id}/updatepassword")
+    public ResponseEntity<?> updatePassword(@PathVariable String id, @RequestBody UserEditPasswordDTO dto){
+        userService.updateUserPassword(id, dto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(){
+    public ResponseEntity<?> deleteUser(@PathVariable String id){
 
-        //TO BE IMPLEMENTED
+        userService.deleteUser(id);
 
         return ResponseEntity.noContent().build();
     }
