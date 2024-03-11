@@ -46,7 +46,7 @@ public class UserController {
 
         var uri = URI.create("/users/" + user.UUID());
 
-        return ResponseEntity.created(uri).build();
+        return ResponseEntity.created(uri).body(user);
     }
 
     @PutMapping("/{id}")
