@@ -8,6 +8,7 @@ import io.github.leocklaus.projectsmanager.domain.exception.UserNotFoundExceptio
 import io.github.leocklaus.projectsmanager.domain.exception.UserNotMatchingPasswordsException;
 import io.github.leocklaus.projectsmanager.domain.model.User;
 import io.github.leocklaus.projectsmanager.domain.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class UserService {
         return new UserOutputDTO(user);
     }
 
+    @Transactional
     public UserOutputDTO createUser(UserInputDTO dto) {
         var user = new User(dto);
         setHashPassword(user, dto.password());
@@ -41,6 +43,7 @@ public class UserService {
         return new UserOutputDTO(user);
     }
 
+    @Transactional
     public UserOutputDTO updateUser(String userId, UserEditDTO dto) {
 
         var user = getUserByIdOrThrowsExceptionIfNotExists(userId);
@@ -51,6 +54,29 @@ public class UserService {
 
         return new UserOutputDTO(userRepository.save(user));
 
+    }
+
+    @Transactional
+    public void deleteUser(String id) {
+        var user = getUserByIdOrThrowsExceptionIfNotExists(id);
+        checkIfIdBelongsToLoggedUserOrThrowsNotAuthorizeException(id);
+
+        userRepository.delete(user);
+    }
+
+    @Transactional
+    public void updateUserPassword(String id, UserEditPasswordDTO dto) {
+        var user = getUserByIdOrThrowsExceptionIfNotExists(id);
+        checkIfIdBelongsToLoggedUserOrThrowsNotAuthorizeException(id);
+
+        //TO BE IMPLEMENTED WHEN BCRYP WORKING
+        if(user.getPassword() != dto.password()){
+            throw new UserNotMatchingPasswordsException();
+        }
+
+        setHashPassword(user, dto.password());
+
+        userRepository.save(user);
     }
 
     private User getUserByIdOrThrowsExceptionIfNotExists(String id){
@@ -68,7 +94,7 @@ public class UserService {
 
         var loggedUser = getLoggedUser();
 
-        return loggedUser.getId().toString() == id? true:false;
+        return loggedUser.getId().toString().equals(id)? true:false;
     }
 
     private User updateUserFromDTO(User user, UserEditDTO dto){
@@ -84,25 +110,4 @@ public class UserService {
         return new User(UUID.randomUUID(), "teste", "teste@teste.com", "12345", "1234");
     }
 
-
-    public void deleteUser(String id) {
-        var user = getUserByIdOrThrowsExceptionIfNotExists(id);
-        checkIfIdBelongsToLoggedUserOrThrowsNotAuthorizeException(id);
-
-        userRepository.delete(user);
-    }
-
-    public void updateUserPassword(String id, UserEditPasswordDTO dto) {
-        var user = getUserByIdOrThrowsExceptionIfNotExists(id);
-        checkIfIdBelongsToLoggedUserOrThrowsNotAuthorizeException(id);
-
-        //TO BE IMPLEMENTED WHEN BCRYP WORKING
-        if(user.getPassword() != dto.password()){
-            throw new UserNotMatchingPasswordsException();
-        }
-
-        setHashPassword(user, dto.password());
-
-        userRepository.save(user);
-    }
 }
