@@ -1,5 +1,7 @@
 package io.github.leocklaus.projectsmanager.api.controller;
 
+import io.github.leocklaus.projectsmanager.api.dto.UserOutputDTO;
+import io.github.leocklaus.projectsmanager.domain.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,6 +10,12 @@ import java.net.URI;
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {
+
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public ResponseEntity<?> getUsersPaged(){
@@ -18,11 +26,11 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable String id){
+    public ResponseEntity<UserOutputDTO> getUserById(@PathVariable String id){
 
-        //TO BE IMPLEMENTED
+        var user = userService.findUserById(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping
