@@ -1,5 +1,6 @@
 package io.github.leocklaus.projectsmanager.domain.model;
 
+import io.github.leocklaus.projectsmanager.api.dto.UserInputDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -31,6 +32,12 @@ public class User {
     @NotNull
     @Column(nullable = false)
     private String password;
+
+    public User(UserInputDTO dto){
+        this.name = dto.name();
+        this.email = dto.email();
+        this.phone = dto.phone();
+    }
 
     @PrePersist
     private void generateUUIDWhenPersists(){
