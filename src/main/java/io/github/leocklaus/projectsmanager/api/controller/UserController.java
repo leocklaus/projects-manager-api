@@ -2,10 +2,14 @@ package io.github.leocklaus.projectsmanager.api.controller;
 
 import io.github.leocklaus.projectsmanager.api.dto.UserOutputDTO;
 import io.github.leocklaus.projectsmanager.domain.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -18,11 +22,11 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getUsersPaged(){
+    public ResponseEntity<Page<UserOutputDTO>> getUsersPaged(Pageable pageable){
 
-        //TO BE IMPLEMENTED
+        Page<UserOutputDTO> users = userService.getUsersPaged(pageable);
 
-        return ResponseEntity.ok("Olá");
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{id}")

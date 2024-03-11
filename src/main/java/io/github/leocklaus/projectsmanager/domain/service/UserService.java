@@ -4,6 +4,8 @@ import io.github.leocklaus.projectsmanager.api.dto.UserOutputDTO;
 import io.github.leocklaus.projectsmanager.domain.exception.UserNotFoundException;
 import io.github.leocklaus.projectsmanager.domain.model.User;
 import io.github.leocklaus.projectsmanager.domain.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -17,6 +19,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    public Page<UserOutputDTO> getUsersPaged(Pageable pageable) {
+        Page<User> users = this.userRepository.findAll(pageable);
+        return users.map(UserOutputDTO::new);
+    }
+
     public UserOutputDTO findUserById(String id){
         var user = getUserByIdOrThrowsExceptionIfNotExists(id);
         return new UserOutputDTO(user);
@@ -27,4 +34,5 @@ public class UserService {
                 .orElseThrow(()-> new UserNotFoundException(id));
         return user;
     }
+
 }
