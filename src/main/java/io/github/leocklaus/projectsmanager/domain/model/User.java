@@ -13,13 +13,10 @@ import java.util.UUID;
 @Entity
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "users")
-public class User {
+public class User extends BaseEntity{
 
-    @Id
-    private UUID id;
+
     @NotNull
     @Column(nullable = false)
     private String name;
@@ -33,16 +30,17 @@ public class User {
     @Column(nullable = false)
     private String password;
 
+    public User(String name, String email, String phone, String password) {
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
+    }
+
     public User(UserInputDTO dto){
         this.name = dto.name();
         this.email = dto.email();
         this.phone = dto.phone();
     }
 
-    @PrePersist
-    private void generateUUIDWhenPersists(){
-        if(this.id == null){
-            this.id = UUID.randomUUID();
-        }
-    }
 }
