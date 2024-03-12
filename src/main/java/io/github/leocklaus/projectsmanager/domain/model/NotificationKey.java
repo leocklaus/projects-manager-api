@@ -1,8 +1,7 @@
 package io.github.leocklaus.projectsmanager.domain.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -14,11 +13,10 @@ import java.util.UUID;
 @AllArgsConstructor
 public class NotificationKey implements Serializable {
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @Column(name = "user_id")
     private UUID userId;
-    @ManyToOne
-    @JoinColumn(name = "notification_object_id")
+
+    @Column(name = "notification_object_id")
     private UUID notificationObjectId;
 
 }

@@ -16,11 +16,14 @@ public class TaskMember {
 
     @ManyToOne
     @MapsId("memberId")
-    @JoinColumn(name = "member_id")
+    @JoinColumns({
+            @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
+            @JoinColumn(name = "project_id", referencedColumnName = "project_id")
+    })
     private ProjectMember projectMember;
 
     @ManyToOne
-    @MapsId("taskID")
+    @MapsId("taskId")
     @JoinColumn(name = "task_id")
     private Task task;
 

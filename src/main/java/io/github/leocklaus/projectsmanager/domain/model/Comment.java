@@ -14,12 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Comment extends BaseEntity {
     @ManyToOne
-    @JoinColumn(name = "task_id")
-    @Column(nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
     @ManyToOne
-    @JoinColumn(name = "task_id")
-    @Column(nullable = false)
+    @JoinColumn(name = "task_id", nullable = false)
     private Task task;
     @ManyToOne
     @JoinColumn(name= "root_comment_id")

@@ -14,12 +14,12 @@ public class Notification {
     @EmbeddedId
     private NotificationKey id;
 
-    @OneToMany
+    @ManyToOne
     @MapsId("userId")
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany
+    @ManyToOne
     @MapsId("notificationObjectId")
     @JoinColumn(name = "notification_object_id")
     private NotificationObject notificationObject;
