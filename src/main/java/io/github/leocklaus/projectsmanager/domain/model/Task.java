@@ -26,6 +26,8 @@ public class Task extends BaseEntity{
     private Set<TaskMember> taskMembers = new HashSet<>();
     @OneToMany(mappedBy = "task")
     private List<SubTask> subTasks = new ArrayList<>();
+    @OneToMany(mappedBy = "task")
+    private List<Comment> comments = new ArrayList<>();
 
     public void setInProgress(){
         this.taskStatus = TaskStatus.IN_PROGRESS;
@@ -45,5 +47,9 @@ public class Task extends BaseEntity{
 
     public void addSubTask(SubTask subTask){
         this.subTasks.add(subTask);
+    }
+
+    public void addComment(Comment comment){
+        this.comments.add(comment);
     }
 }
