@@ -1,5 +1,6 @@
 package io.github.leocklaus.projectsmanager.domain.model;
 
+import io.github.leocklaus.projectsmanager.api.dto.CommentInputDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
@@ -13,6 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Comment extends BaseEntity {
+
+    private String content;
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -24,4 +27,9 @@ public class Comment extends BaseEntity {
     private Comment rootComment;
     @Column(nullable = false)
     private CommentType commentType;
+
+    public Comment(CommentInputDTO dto){
+        this.commentType = dto.type();
+        this.content = dto.content();
+    }
 }
