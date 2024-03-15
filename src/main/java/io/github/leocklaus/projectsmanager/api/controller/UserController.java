@@ -1,9 +1,7 @@
 package io.github.leocklaus.projectsmanager.api.controller;
 
-import io.github.leocklaus.projectsmanager.api.dto.UserEditDTO;
-import io.github.leocklaus.projectsmanager.api.dto.UserEditPasswordDTO;
-import io.github.leocklaus.projectsmanager.api.dto.UserInputDTO;
-import io.github.leocklaus.projectsmanager.api.dto.UserOutputDTO;
+import io.github.leocklaus.projectsmanager.api.dto.*;
+import io.github.leocklaus.projectsmanager.domain.service.TaskService;
 import io.github.leocklaus.projectsmanager.domain.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -49,6 +47,7 @@ public class UserController {
         return ResponseEntity.created(uri).body(user);
     }
 
+
     @PutMapping("/{id}")
     public ResponseEntity<UserOutputDTO> updateUser(@PathVariable String id, @RequestBody UserEditDTO dto){
 
@@ -62,6 +61,7 @@ public class UserController {
         userService.updateUserPassword(id, dto);
         return ResponseEntity.noContent().build();
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable String id){
