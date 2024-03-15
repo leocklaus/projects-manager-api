@@ -79,7 +79,7 @@ public class UserService {
         userRepository.save(user);
     }
 
-    private User getUserByIdOrThrowsExceptionIfNotExists(String id){
+    public User getUserByIdOrThrowsExceptionIfNotExists(String id){
         User user = userRepository.findById(UUID.fromString(id))
                 .orElseThrow(()-> new UserNotFoundException(id));
         return user;
