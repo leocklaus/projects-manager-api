@@ -6,6 +6,8 @@ import io.github.leocklaus.projectsmanager.api.dto.UserInputDTO;
 import io.github.leocklaus.projectsmanager.api.dto.UserOutputDTO;
 import io.github.leocklaus.projectsmanager.domain.exception.UserNotFoundException;
 import io.github.leocklaus.projectsmanager.domain.exception.UserNotMatchingPasswordsException;
+import io.github.leocklaus.projectsmanager.domain.model.Authorities;
+import io.github.leocklaus.projectsmanager.domain.model.Role;
 import io.github.leocklaus.projectsmanager.domain.model.User;
 import io.github.leocklaus.projectsmanager.domain.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -80,6 +82,13 @@ public class UserService {
 
         setHashPassword(user, dto.password());
 
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void setUserAsAdmin(String id){
+        var user = getUserByIdOrThrowsExceptionIfNotExists(id);
+        user.setAdmin();
         userRepository.save(user);
     }
 

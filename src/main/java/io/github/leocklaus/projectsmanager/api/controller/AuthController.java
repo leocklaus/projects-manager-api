@@ -8,10 +8,9 @@ import io.github.leocklaus.projectsmanager.domain.service.AuthService;
 import io.github.leocklaus.projectsmanager.domain.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 
@@ -41,6 +40,13 @@ public class AuthController {
         var uri = URI.create("/users/" + user.UUID());
 
         return ResponseEntity.created(uri).body(user);
+    }
+
+    @PutMapping("/{id}/admin")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> setUserAdAdmin(@PathVariable String id){
+        userService.setUserAsAdmin(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
