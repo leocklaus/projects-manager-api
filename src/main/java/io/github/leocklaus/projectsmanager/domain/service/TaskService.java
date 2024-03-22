@@ -40,7 +40,7 @@ public class TaskService {
         var user = userService.getUserByIdOrThrowsExceptionIfNotExists(dto.leaderId());
         var project = projectService.getProjectByIdOrThrowsNotFoundExceptionIfNotExists(UUID.fromString(projectId));
         var projectMember = project.getMembers().stream().filter(member -> member.getUser().getId() == user.getId())
-                .findFirst().orElseThrow(()-> new MemberNotFoundException());
+                .findFirst().orElseThrow(MemberNotFoundException::new);
         var task = new Task(dto);
         task.setProject(project);
         task = taskRepository.save(task);
@@ -54,7 +54,7 @@ public class TaskService {
     public void addTaskMember(String id, String memberId){
         var task = getTaskByIdOrThrowsExceptionIfNotExists(UUID.fromString(id));
         var projectMember =  task.getProject().getMembers().stream().filter(member -> member.getUser().getId().equals(UUID.fromString(memberId)))
-                .findFirst().orElseThrow(()-> new MemberNotFoundException());
+                .findFirst().orElseThrow(MemberNotFoundException::new);
         var taskMember = createTaskMember(task, projectMember, MemberType.MEMBER);
         taskMemberRepository.save(taskMember);
     }
