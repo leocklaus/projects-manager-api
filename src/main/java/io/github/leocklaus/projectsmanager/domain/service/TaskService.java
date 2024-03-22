@@ -5,6 +5,7 @@ import io.github.leocklaus.projectsmanager.domain.exception.MemberNotFoundExcept
 import io.github.leocklaus.projectsmanager.domain.exception.TaskNotFoundException;
 import io.github.leocklaus.projectsmanager.domain.exception.UserNotAuthorizedException;
 import io.github.leocklaus.projectsmanager.domain.model.*;
+import io.github.leocklaus.projectsmanager.domain.projection.ProjectTasksProjection;
 import io.github.leocklaus.projectsmanager.domain.repository.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,16 +65,9 @@ public class TaskService {
     }
 
     @Transactional
-    public List<TaskShortOutputDTO> getTasksByProjectId(String id) {
+    public List<ProjectTasksProjection> getTasksByProjectId(String id) {
         var project = projectService.getProjectByIdOrThrowsNotFoundExceptionIfNotExists(UUID.fromString(id));
-        var tasks = project.getTasks();
-
-        return tasks.stream().map(task -> {
-            var subtasks = task.getSubTasks();
-            var completedSubsTasksNumber = subtasks.stream().filter(subtask -> subtask.isChecked()).count();
-            var numberOfMembers = task.getTaskMembers().size();
-            return new TaskShortOutputDTO(task, subtasks.size(), completedSubsTasksNumber, numberOfMembers);
-        }).toList();
+        return taskRepository.getProjectTasksWithDetails(project);
     }
 
     private Task getTaskByIdOrThrowsExceptionIfNotExists(UUID taskId){
@@ -179,3 +173,4 @@ public class TaskService {
 
     }
 }
+

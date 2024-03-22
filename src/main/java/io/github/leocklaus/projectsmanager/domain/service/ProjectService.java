@@ -6,8 +6,10 @@ import io.github.leocklaus.projectsmanager.domain.exception.ProjectNotFoundExcep
 import io.github.leocklaus.projectsmanager.domain.exception.UserNotAuthorizedException;
 import io.github.leocklaus.projectsmanager.domain.exception.UserNotFoundException;
 import io.github.leocklaus.projectsmanager.domain.model.*;
+import io.github.leocklaus.projectsmanager.domain.projection.ProjectTasksProjection;
 import io.github.leocklaus.projectsmanager.domain.repository.ProjectMemberRepository;
 import io.github.leocklaus.projectsmanager.domain.repository.ProjectRepository;
+import io.github.leocklaus.projectsmanager.domain.repository.TaskRepository;
 import io.github.leocklaus.projectsmanager.domain.service.strategy.NewCommentNotificationStrategy;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -25,11 +27,14 @@ public class ProjectService {
     private final UserService userService;
     private final ProjectMemberRepository projectMemberRepository;
 
+    private final TaskRepository taskRepository;
 
-    public ProjectService(ProjectRepository projectRepository, UserService userService, ProjectMemberRepository projectMemberRepository) {
+
+    public ProjectService(ProjectRepository projectRepository, UserService userService, ProjectMemberRepository projectMemberRepository, TaskRepository taskRepository) {
         this.projectRepository = projectRepository;
         this.userService = userService;
         this.projectMemberRepository = projectMemberRepository;
+        this.taskRepository = taskRepository;
     }
 
     public Page<ProjectShortOutputDTO> getAllProjectsPaged(Pageable pageable){
@@ -86,12 +91,8 @@ public class ProjectService {
             return new UserShortOutputDTO(member.getUser().getId(), member.getUser().getName(), member.getMemberType());
         }).toList();
 
-        List<TaskShortOutputDTO> tasks = project.getTasks().stream().map(task -> {
-            Integer subTaskNumber = task.getSubTasks().size();
-            Long subtasksCompleted = task.getSubTasks().stream().filter(subTask -> subTask.isChecked())
-                    .count();
-            return new TaskShortOutputDTO(task, task.getSubTasks().size(), subtasksCompleted,task.getTaskMembers().size());
-        }).toList();
+        List<ProjectTasksProjection> tasks = taskRepository.getProjectTasksWithDetails(project);
+
 
         return new ProjectFullOutputDTO(project, membersDTO, tasks);
     }

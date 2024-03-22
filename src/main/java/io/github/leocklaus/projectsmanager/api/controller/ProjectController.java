@@ -1,6 +1,7 @@
 package io.github.leocklaus.projectsmanager.api.controller;
 
 import io.github.leocklaus.projectsmanager.api.dto.*;
+import io.github.leocklaus.projectsmanager.domain.projection.ProjectTasksProjection;
 import io.github.leocklaus.projectsmanager.domain.service.ProjectService;
 import io.github.leocklaus.projectsmanager.domain.service.TaskService;
 import jakarta.validation.Valid;
@@ -39,8 +40,8 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}/tasks")
-    public ResponseEntity<List<TaskShortOutputDTO>> getProjectTasks(@PathVariable String id){
-        List<TaskShortOutputDTO> tasks = taskService.getTasksByProjectId(id);
+    public ResponseEntity<List<ProjectTasksProjection>> getProjectTasks(@PathVariable String id){
+        var tasks = taskService.getTasksByProjectId(id);
 
         return ResponseEntity.ok(tasks);
     }

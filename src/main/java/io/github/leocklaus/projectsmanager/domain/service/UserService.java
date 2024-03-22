@@ -11,6 +11,7 @@ import io.github.leocklaus.projectsmanager.domain.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -19,9 +20,13 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthService authService;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthService authService) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.authService = authService;
     }
 
     public Page<UserOutputDTO> getUsersPaged(Pageable pageable) {
@@ -69,8 +74,7 @@ public class UserService {
         var user = getUserByIdOrThrowsExceptionIfNotExists(id);
         checkIfIdBelongsToLoggedUserOrThrowsNotAuthorizeException(id);
 
-        //TO BE IMPLEMENTED WHEN BCRYP WORKING
-        if(user.getPassword() != dto.password()){
+        if(!passwordEncoder.matches(dto.password(), user.getPassword())){
             throw new UserNotMatchingPasswordsException();
         }
 
@@ -86,7 +90,7 @@ public class UserService {
     }
 
     private void setHashPassword(User user, String password){
-        //TO BE IMPLEMENTED
+        password = passwordEncoder.encode(password);
         user.setPassword(password);
     }
 
@@ -94,7 +98,7 @@ public class UserService {
 
         var loggedUser = getLoggedUser();
 
-        return loggedUser.getId().toString().equals(id)? true:false;
+        return loggedUser.getId().toString().equals(id);
     }
 
     private User updateUserFromDTO(User user, UserEditDTO dto){
@@ -106,8 +110,7 @@ public class UserService {
     }
 
     public User getLoggedUser(){
-        //TO BE IMPLEMENTED
-        return new User(UUID.randomUUID(),"teste", "teste@teste.com", "12345", "1234");
+        return authService.getLoggedUser();
     }
 
 }
